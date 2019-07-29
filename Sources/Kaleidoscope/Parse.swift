@@ -50,7 +50,7 @@ func parseIdentifierExpr() -> ExprAST? {
 
 //解析数值常量
 func parseNumberExpr() -> ExprAST {
-    let result = NumberExprAST(Double(currentToken!.val)!)
+    let result = NumberExprAST(Int(currentToken!.val)!)
     getNextToken()
     return result
 }
@@ -172,21 +172,30 @@ func parseTopLevelExpr() -> FunctionAST? {
 //MARK: Top-Level Parse
 
 func handleDefinition() {
-    if let _ = parseDefinition() {
-        print("Parsed a function definition.")
+    if let p = parseDefinition() {
+        if let f = p.codeGen() {
+            print("Parsed a function definition.")
+            f.dump()
+        }
     } else {
         getNextToken()
     }
 }
 
 func handleExtern() {
-    let _ = parseExtern()
-    print("Parsed an extern.")
+    let p = parseExtern()
+    if let f = p.codeGen() {
+        print("Parsed an extern.")
+        f.dump()
+    }
 }
 
 func handleTopLevelExpression() {
-    if let _ = parseTopLevelExpr() {
-        print("Parsed a top-level expr.")
+    if let p = parseTopLevelExpr() {
+        if let f = p.codeGen() {
+            print("Parsed a top-level expr.")
+            f.dump()
+        }
     } else {
         getNextToken()
     }

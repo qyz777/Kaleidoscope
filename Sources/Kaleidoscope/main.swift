@@ -7,15 +7,12 @@
 //
 
 import Foundation
-import LLVM
-
-let module = Module(name: "main")
-module.dump()
+@_exported import LLVM
 
 /**
  
  测试用例:
- def foo(x y) x+foo(y, 4.0);
+ def foo(x y) x+foo(y, 4);
  def foo(x y) x+y y;
  def foo(x y) x+y );
  extern sin(a);

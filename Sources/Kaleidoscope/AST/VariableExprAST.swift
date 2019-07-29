@@ -16,4 +16,12 @@ class VariableExprAST: ExprAST {
         self.name = name
     }
     
+    func codeGen() -> IRValue? {
+        let value = namedValues[name!]
+        guard value != nil else {
+            fatalError("unknow variable name.")
+        }
+        return value!.asLLVM()
+    }
+    
 }

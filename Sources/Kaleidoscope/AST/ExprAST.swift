@@ -8,8 +8,16 @@
 
 import Foundation
 
-class ExprAST {
+protocol ExprAST {
     
+    func codeGen() -> IRValue?
     
+}
+
+extension ExprAST {
+    
+    func codeGen() -> IRValue? {
+        return nil
+    }
     
 }

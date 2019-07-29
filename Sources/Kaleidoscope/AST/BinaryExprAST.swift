@@ -22,5 +22,26 @@ class BinaryExprAST: ExprAST {
         self.rhs = rhs
     }
     
+    func codeGen() -> IRValue? {
+        let l = lhs!.codeGen()
+        let r = rhs!.codeGen()
+        guard l != nil && r != nil else {
+            return nil
+        }
+        switch op! {
+        case "+":
+            return builder.buildAdd(l!, r!, name: "add")
+        case "-":
+            return builder.buildSub(l!, r!, name: "sub")
+        case "*":
+            return builder.buildMul(l!, r!, name: "mul")
+        case "<":
+            let newL = builder.buildICmp(l!, r!, .signedLessThan, name: "cmp")
+            return builder.buildIntToFP(newL, type: .double, signed: false)
+        default:
+            fatalError("Invalid binary operator.")
+        }
+    }
+    
     
 }

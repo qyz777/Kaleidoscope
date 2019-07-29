@@ -19,4 +19,21 @@ class FunctionAST {
         self.body = body
     }
     
+    func codeGen() -> Function? {
+        namedValues.removeAll()
+        let theFunction = proto!.codeGen()
+        guard theFunction != nil else {
+            return nil
+        }
+        let bb = BasicBlock(name: "entry")
+        builder.positionAtEnd(of: bb)
+        if let retValue = body!.codeGen() {
+            builder.buildRet(retValue)
+            return theFunction
+        }
+        //函数体出现问题，移除函数
+        theFunction!.eraseFromParent()
+        return nil
+    }
+    
 }
