@@ -29,6 +29,7 @@ class FunctionAST {
         builder.positionAtEnd(of: entry)
         if let retValue = body!.codeGen() {
             builder.buildRet(retValue)
+            passPipeliner.execute()
             return theFunction
         }
         //函数体出现问题，移除函数

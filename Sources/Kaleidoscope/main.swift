@@ -20,10 +20,11 @@ import Foundation
  */
 
 while let str = String(data: FileHandle.standardInput.availableData, encoding: .utf8) {
-    guard str != "#" else {
+    guard !str.hasPrefix("#") else {
         break
     }
     content = Array(str)
     getNextToken()
+    setupPassPipeliner()
     mainLoop()
 }

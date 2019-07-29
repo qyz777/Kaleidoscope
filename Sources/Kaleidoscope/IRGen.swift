@@ -9,6 +9,11 @@ import Foundation
 import LLVM
 
 let theModule = Module(name: "main")
+let passPipeliner = PassPipeliner(module: theModule)
 let globalContext = Context.global
 let builder = IRBuilder(module: theModule)
 var namedValues: [String: IRValue] = [:]
+
+func setupPassPipeliner() {
+    passPipeliner.addStandardFunctionPipeline("pass")
+}
