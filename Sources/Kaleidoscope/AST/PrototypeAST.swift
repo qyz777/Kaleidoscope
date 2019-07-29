@@ -20,8 +20,8 @@ class PrototypeAST {
     }
     
     func codeGen() -> Function? {
-        let ints = Array(repeating: IntType(width: 1), count: args!.count)
-        let ft = FunctionType(ints, IntType(width: 1), variadic: false)
+        let ints = Array(repeating: IntType(width: 32), count: args!.count)
+        let ft = FunctionType(ints, IntType(width: 32), variadic: false)
         var f: Function? = builder.addFunction(name!, type: ft)
         if f!.name != name {
             f!.eraseFromParent()

@@ -25,8 +25,8 @@ class FunctionAST {
         guard theFunction != nil else {
             return nil
         }
-        let bb = BasicBlock(name: "entry")
-        builder.positionAtEnd(of: bb)
+        let entry = theFunction!.appendBasicBlock(named: "entry")
+        builder.positionAtEnd(of: entry)
         if let retValue = body!.codeGen() {
             builder.buildRet(retValue)
             return theFunction

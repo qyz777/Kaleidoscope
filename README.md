@@ -2,15 +2,16 @@
 
 coding中...
 
+## 运行工程的必要配置
 
-
-# 安装LLVM
+### 下载llvm和pkg-config
 
 ```shell
 brew install llvm
+brew install pkg-config
 ```
 
-出现信息
+安装完llvm出现下列信息
 
 ```
 ==> llvm
@@ -29,11 +30,19 @@ For compilers to find llvm you may need to set:
   export CPPFLAGS="-I/usr/local/opt/llvm/include"
 ```
 
-设置环境
+### 设置环境
 
 ```shell
 export LDFLAGS="-L/usr/local/opt/llvm/lib"
 export CPPFLAGS="-I/usr/local/opt/llvm/include"
+```
+
+### 工程配置
+
+```shell
+# 来自LLVMSwift的脚本
 swift utils/make-pkgconfig.swift
+# 编译工程
+swift build
 ```
 
