@@ -163,7 +163,7 @@ func parseExtern() -> PrototypeAST {
 
 func parseTopLevelExpr() -> FunctionAST? {
     if let e = parseExpression() {
-        let proto = PrototypeAST("", [])
+        let proto = PrototypeAST("__anon_expr", [])
         return FunctionAST(proto, e)
     }
     return nil
@@ -174,8 +174,12 @@ func parseTopLevelExpr() -> FunctionAST? {
 func handleDefinition() {
     if let p = parseDefinition() {
         if let f = p.codeGen() {
-            print("Parsed a function definition.")
+            print("Read function definition:")
             f.dump()
+            _ = try! theJIT.addLazilyCompiledIR(theModule) { (_) -> JIT.TargetAddress in
+                return JIT.TargetAddress()
+            }
+            initModuleAndPassPipeliner()
         }
     } else {
         getNextToken()
@@ -184,17 +188,31 @@ func handleDefinition() {
 
 func handleExtern() {
     let p = parseExtern()
-    if let f = p.codeGen() {
-        print("Parsed an extern.")
-        f.dump()
-    }
+    let f = p.codeGen()
+    print("Read extern:")
+    f.dump()
+    functionProtos[p.name!] = p
 }
 
 func handleTopLevelExpression() {
     if let p = parseTopLevelExpr() {
         if let f = p.codeGen() {
-            print("Parsed a top-level expr.")
+            print("Read top-level expression:")
             f.dump()
+            do {
+                let handle = try theJIT.addEagerlyCompiledIR(theModule) { (name) -> JIT.TargetAddress in
+                    return JIT.TargetAddress()
+                }
+                //这里有个野指针问题不知道如何解决?
+                let addr = try theJIT.address(of: "__anon_expr")
+                typealias FnPr = @convention(c) () -> Int
+                let fn = unsafeBitCast(addr, to: FnPr.self)
+                print("Evaluated to \(fn()).")
+                try theJIT.removeModule(handle)
+                initModuleAndPassPipeliner()
+            } catch {
+                fatalError("Adds the IR from a given module failure.")
+            }
         }
     } else {
         getNextToken()

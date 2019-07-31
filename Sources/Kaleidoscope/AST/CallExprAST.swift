@@ -20,7 +20,7 @@ class CallExprAST: ExprAST {
     }
     
     func codeGen() -> IRValue? {
-        let calleeF = theModule.function(named: callee!)
+        let calleeF = getFunction(named: callee!)
         guard calleeF != nil else {
             return nil
         }

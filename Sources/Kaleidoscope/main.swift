@@ -25,6 +25,6 @@ while let str = String(data: FileHandle.standardInput.availableData, encoding: .
     }
     content = Array(str)
     getNextToken()
-    setupPassPipeliner()
+    initModuleAndPassPipeliner()
     mainLoop()
 }
