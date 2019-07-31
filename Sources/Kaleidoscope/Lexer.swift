@@ -37,6 +37,16 @@ func getToken() -> CurrentToken {
             return CurrentToken(token: .def, val: "def")
         } else if identifierStr == "extern" {
             return CurrentToken(token: .extern, val: "extern")
+        } else if identifierStr == "if" {
+            return CurrentToken(token: .if, val: "if")
+        } else if identifierStr == "then" {
+            return CurrentToken(token: .then, val: "then")
+        } else if identifierStr == "else" {
+            return CurrentToken(token: .else, val: "else")
+        } else if identifierStr == "for" {
+            return CurrentToken(token: .for, val: "for")
+        } else if identifierStr == "in" {
+            return CurrentToken(token: .in, val: "in")
         } else {
             return CurrentToken(token: .identifier, val: identifierStr)
         }
@@ -80,6 +90,8 @@ func mainLoop() {
             break
         case .number, .identifier, .other:
             handleTopLevelExpression()
+            break
+        case .if, .then, .else, .for, .in:
             break
         }
     }

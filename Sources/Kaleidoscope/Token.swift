@@ -13,5 +13,10 @@ enum Token {
     case extern
     case identifier
     case number
+    case `if`
+    case then
+    case `else`
+    case `for`
+    case `in`
     case other
 }

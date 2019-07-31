@@ -36,8 +36,8 @@ class BinaryExprAST: ExprAST {
         case "*":
             return builder.buildMul(l!, r!, name: "mul")
         case "<":
-            let newL = builder.buildICmp(l!, r!, .signedLessThan, name: "cmp")
-            return builder.buildIntToFP(newL, type: .double, signed: false)
+            let newL = builder.buildICmp(l!, r!, .signedLessThan, name: "boolCmp")
+            return builder.buildIntCast(of: newL, to: IntType.int64)
         default:
             fatalError("Invalid binary operator.")
         }

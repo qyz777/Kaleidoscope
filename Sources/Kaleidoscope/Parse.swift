@@ -82,11 +82,16 @@ func parsePrimary() -> ExprAST? {
         return parseIdentifierExpr()
     case .number:
         return parseNumberExpr()
+    case .if:
+        return parseIfExpr()
+    case .for:
+        return parseForExpr()
     default:
         fatalError("unknow token when expecting an expression")
     }
 }
 
+//解析二元运算符
 func parseBinOpRHS(_ exprPrec: Int, _ lhs: inout ExprAST) -> ExprAST? {
     while true {
         let tokPrec = getTokenPrecedence()
@@ -167,6 +172,80 @@ func parseTopLevelExpr() -> FunctionAST? {
         return FunctionAST(proto, e)
     }
     return nil
+}
+
+//解析条件语句
+func parseIfExpr() -> ExprAST? {
+    getNextToken()
+    let cond = parseExpression()
+    guard cond != nil else {
+        return nil
+    }
+    guard currentToken!.token == .then else {
+        fatalError("expected then.")
+    }
+    getNextToken()
+    let then = parseExpression()
+    guard then != nil else {
+        return nil
+    }
+    guard currentToken!.token == .else else {
+        fatalError("expected else.")
+    }
+    getNextToken()
+    let `else` = parseExpression()
+    guard `else` != nil else {
+        return nil
+    }
+    return IfExprAST(cond!, then!, `else`!)
+}
+
+func parseForExpr() -> ExprAST? {
+    getNextToken()
+    guard currentToken!.token == .identifier else {
+        fatalError("expected identifier after for.")
+    }
+    let idName = currentToken!.val
+    getNextToken()
+    guard currentToken!.val == "=" else {
+        fatalError("expected '=' after for.")
+    }
+    
+    getNextToken()
+    let start = parseExpression()
+    guard start != nil else {
+        return nil
+    }
+    guard currentToken!.val == "," else {
+        fatalError("expected ',' after start value.")
+    }
+    
+    getNextToken()
+    let end = parseExpression()
+    guard end != nil else {
+        return nil
+    }
+    
+    var step: ExprAST!
+    if currentToken!.val == "," {
+        getNextToken()
+        step = parseExpression()
+        guard step != nil else {
+            return nil
+        }
+    }
+    
+    guard currentToken!.token == .in else {
+        fatalError("expected 'in' after for.")
+    }
+    getNextToken()
+    
+    let body = parseExpression()
+    guard body != nil else {
+        return nil
+    }
+    
+    return ForExprAST(idName, start!, end!, step!, body!)
 }
 
 //MARK: Top-Level Parse
