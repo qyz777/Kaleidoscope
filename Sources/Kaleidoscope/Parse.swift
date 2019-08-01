@@ -282,7 +282,6 @@ func handleTopLevelExpression() {
                 let handle = try theJIT.addEagerlyCompiledIR(theModule) { (name) -> JIT.TargetAddress in
                     return JIT.TargetAddress()
                 }
-                //这里有个野指针问题不知道如何解决?
                 let addr = try theJIT.address(of: "__anon_expr")
                 typealias FnPr = @convention(c) () -> Int
                 let fn = unsafeBitCast(addr, to: FnPr.self)

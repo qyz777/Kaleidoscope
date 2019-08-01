@@ -76,7 +76,6 @@ func getChar() -> Character {
 }
 
 func mainLoop() {
-    theJIT = JIT(machine: targetMachine)
     while true {
         if currentToken!.val == ";" || currentToken!.val == "" {
             break

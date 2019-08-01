@@ -17,6 +17,11 @@ import Foundation
  def foo(x y) x+y );
  extern sin(a);
  
+ JIT测试用例:
+ def testfunc(x y) x + y*2;
+ testfunc(4, 10);
+ testfunc(4, 20);
+ 
  控制语句测试用例:
  extern foo();
  extern bar();
@@ -30,12 +35,20 @@ import Foundation
  
  */
 
-while let str = String(data: FileHandle.standardInput.availableData, encoding: .utf8) {
-    guard !str.hasPrefix("#") else {
-        break
-    }
-    content = Array(str)
-    getNextToken()
+func main() {
+    //初始化JIT
+    theJIT = JIT(machine: targetMachine)
+    //初始化Module和中间代码优化器
     initModuleAndPassPipeliner()
-    mainLoop()
+    
+    while let str = String(data: FileHandle.standardInput.availableData, encoding: .utf8) {
+        guard !str.hasPrefix("#") else {
+            break
+        }
+        content = Array(str)
+        getNextToken()
+        mainLoop()
+    }
 }
+
+main()
