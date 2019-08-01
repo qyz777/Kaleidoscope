@@ -1,6 +1,24 @@
 # Kaleidoscope
 
-coding中...
+参考[My First Language Frontend with LLVM Tutorial](http://llvm.org/docs/tutorial/MyFirstLanguageFrontend/index.html)的C++代码实现的swift版Kaleidoscope，目前正在coding中。
+
+Kaleidoscope是LLVM教程中实现的demo语言，以下是它的介绍
+
+```
+This tutorial introduces the simple “Kaleidoscope” language, building it iteratively over the course of several chapters, showing how it is built over time. This lets us cover a range of language design and LLVM-specific ideas, showing and explaining the code for it all along the way, and reduces the overwhelming amount of details up front. We strongly encourage that you work with this code - make a copy and hack it up and experiment.
+```
+
+## TODO
+
+[Chapter #7](http://llvm.org/docs/tutorial/MyFirstLanguageFrontend/LangImpl07.html)
+
+[Chapter #8](http://llvm.org/docs/tutorial/MyFirstLanguageFrontend/LangImpl08.html)
+
+[Chapter #9](http://llvm.org/docs/tutorial/MyFirstLanguageFrontend/LangImpl09.html)
+
+[Chapter #10](http://llvm.org/docs/tutorial/MyFirstLanguageFrontend/LangImpl10.html)
+
+完善工程代码
 
 ## 运行工程的必要配置
 
@@ -11,32 +29,6 @@ brew install llvm
 brew install pkg-config
 ```
 
-安装完llvm出现下列信息
-
-```
-==> llvm
-To use the bundled libc++ please add the following LDFLAGS:
-  LDFLAGS="-L/usr/local/opt/llvm/lib -Wl,-rpath,/usr/local/opt/llvm/lib"
-
-llvm is keg-only, which means it was not symlinked into /usr/local,
-because macOS already provides this software and installing another version in
-parallel can cause all kinds of trouble.
-
-If you need to have llvm first in your PATH run:
-  echo 'export PATH="/usr/local/opt/llvm/bin:$PATH"' >> ~/.bash_profile
-
-For compilers to find llvm you may need to set:
-  export LDFLAGS="-L/usr/local/opt/llvm/lib"
-  export CPPFLAGS="-I/usr/local/opt/llvm/include"
-```
-
-### 设置环境
-
-```shell
-export LDFLAGS="-L/usr/local/opt/llvm/lib"
-export CPPFLAGS="-I/usr/local/opt/llvm/include"
-```
-
 ### 工程配置
 
 ```shell
@@ -44,5 +36,12 @@ export CPPFLAGS="-I/usr/local/opt/llvm/include"
 swift utils/make-pkgconfig.swift
 # 编译工程
 swift build
+```
+
+## 测试
+
+```shell
+swift run
+./Examples/test.k
 ```
 
