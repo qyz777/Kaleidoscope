@@ -66,7 +66,9 @@ func getToken() -> CurrentToken {
     }
     
     let thisChar = lastChar
-    lastChar = getChar()
+    if thisChar != ";" {
+        lastChar = getChar()
+    }
     
     return CurrentToken(token: .other, val: String(thisChar))
 }
@@ -79,24 +81,25 @@ func getChar() -> Character {
     return char
 }
 
-func mainLoop() {
-    while true {
-        if currentToken!.val == ";" || currentToken!.val == "" {
-            break
-        }
+func mainLoop(_ input: String) {
+    let blockArray = input.split(separator: ";")
+    for block in blockArray {
+        content = Array(block + ";")
+        i = 0
+        lastChar = " "
+        getNextToken()
         switch currentToken!.token {
         case .def:
             handleDefinition()
-            break
+            continue
         case .extern:
             handleExtern()
-            break
+            continue
         case .number, .identifier:
             handleTopLevelExpression()
-            break
+            continue
         default:
-            break
+            continue
         }
     }
-    i = 0
 }

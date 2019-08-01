@@ -43,7 +43,26 @@ import Foundation
  def binary : 1 (x y) 0;
  testfunc(1, 2) : testfunc(3, 4) : testfunc(5, 6);
  
+ /Users/qyizhong/Desktop/Kaleidoscope/Examples/test.k
+ 
  */
+
+func readFile(_ path: String) -> String? {
+    var path = path
+    if path.hasSuffix("\n") {
+        path.removeLast()
+    }
+    guard path.split(separator: ".").last! == "k" else {
+        print("Expected file is *.k.")
+        return nil
+    }
+    do {
+        return try String(contentsOfFile: path, encoding: .utf8)
+    } catch {
+        print("Read file \(path) failure.")
+        return nil
+    }
+}
 
 func main() {
     //初始化JIT
@@ -51,13 +70,11 @@ func main() {
     //初始化Module和中间代码优化器
     initModuleAndPassPipeliner()
     
-    while let str = String(data: FileHandle.standardInput.availableData, encoding: .utf8) {
-        guard !str.hasPrefix("#") else {
-            break
+    if let path = String(data: FileHandle.standardInput.availableData, encoding: .utf8) {
+        
+        if let str = readFile(path) {
+            mainLoop(str)
         }
-        content = Array(str)
-        getNextToken()
-        mainLoop()
     }
 }
 
