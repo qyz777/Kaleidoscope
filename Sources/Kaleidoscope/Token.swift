@@ -18,5 +18,7 @@ enum Token {
     case `else`
     case `for`
     case `in`
+    case binary
+    case unary
     case other
 }

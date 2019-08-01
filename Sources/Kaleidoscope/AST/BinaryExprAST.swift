@@ -10,11 +10,11 @@ import Foundation
 
 class BinaryExprAST: ExprAST {
     
-    var op: String?
+    let op: String
     
-    var lhs: ExprAST?
+    let lhs: ExprAST
     
-    var rhs: ExprAST?
+    let rhs: ExprAST
     
     init(_ op: String, _ lhs: ExprAST, _ rhs: ExprAST) {
         self.op = op
@@ -23,12 +23,12 @@ class BinaryExprAST: ExprAST {
     }
     
     func codeGen() -> IRValue? {
-        let l = lhs!.codeGen()
-        let r = rhs!.codeGen()
+        let l = lhs.codeGen()
+        let r = rhs.codeGen()
         guard l != nil && r != nil else {
             return nil
         }
-        switch op! {
+        switch op {
         case "+":
             return builder.buildAdd(l!, r!, name: "add")
         case "-":
@@ -39,9 +39,16 @@ class BinaryExprAST: ExprAST {
             let newL = builder.buildICmp(l!, r!, .signedLessThan, name: "boolCmp")
             return builder.buildIntCast(of: newL, to: IntType.int64)
         default:
-            fatalError("Invalid binary operator.")
+            break
         }
+        
+        //如果走到这里了，说明这个运算符是用户自己定义的
+        let fn = getFunction(named: "binary" + op)
+        guard fn != nil else {
+            fatalError("\(String(describing: fn)) binary operator not found!")
+        }
+        let ops = [l!, r!]
+        return builder.buildCall(fn!, args: ops, name: "binaryOp")
     }
-    
     
 }

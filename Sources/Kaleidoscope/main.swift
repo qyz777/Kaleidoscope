@@ -33,6 +33,12 @@ import Foundation
  
  控制语句和循环语句需要了解的知识点: SSA和Phi
  
+ 用户定义一元表达式测试用例:
+ def unary!(v) if v then 0 else 1;
+ 
+ 用户定义二元表达式测试用例:
+ def binary> 10 (LHS RHS) RHS < LHS;
+ 
  */
 
 func main() {

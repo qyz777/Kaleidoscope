@@ -10,9 +10,9 @@ import Foundation
 
 class FunctionAST {
     
-    var proto: PrototypeAST?
+    let proto: PrototypeAST
     
-    var body: ExprAST?
+    let body: ExprAST
     
     init(_ proto: PrototypeAST, _ body: ExprAST) {
         self.proto = proto
@@ -20,10 +20,15 @@ class FunctionAST {
     }
     
     func codeGen() -> Function? {
-        functionProtos[proto!.name!] = proto
-        let theFunction = getFunction(named: proto!.name!)
+        functionProtos[proto.name] = proto
+        let theFunction = getFunction(named: proto.name)
         guard theFunction != nil else {
             return nil
+        }
+        
+        //如果是操作符，把他放在全局的操作符表中
+        if proto.isOperator {
+            binOpPrecedence[proto.operatorName!] = proto.precedence
         }
         
         let entry = theFunction!.appendBasicBlock(named: "entry")
@@ -36,7 +41,7 @@ class FunctionAST {
             p = p?.next()
         }
         
-        if let retValue = body!.codeGen() {
+        if let retValue = body.codeGen() {
             builder.buildRet(retValue)
             do {
                 try theModule.verify()

@@ -47,6 +47,10 @@ func getToken() -> CurrentToken {
             return CurrentToken(token: .for, val: "for")
         } else if identifierStr == "in" {
             return CurrentToken(token: .in, val: "in")
+        } else if identifierStr == "binary" {
+            return CurrentToken(token: .binary, val: "binary")
+        } else if identifierStr == "unary" {
+            return CurrentToken(token: .unary, val: "unary")
         } else {
             return CurrentToken(token: .identifier, val: identifierStr)
         }
@@ -87,10 +91,10 @@ func mainLoop() {
         case .extern:
             handleExtern()
             break
-        case .number, .identifier, .other:
+        case .number, .identifier:
             handleTopLevelExpression()
             break
-        case .if, .then, .else, .for, .in:
+        default:
             break
         }
     }

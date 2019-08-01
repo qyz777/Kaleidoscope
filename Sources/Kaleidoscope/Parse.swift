@@ -8,12 +8,12 @@
 
 import Foundation
 
-let binOpPrecedence: [String: Int] = ["<": 10, "+": 20, "-": 20, "*": 40]
+var binOpPrecedence: [String: UInt] = ["<": 10, "+": 20, "-": 20, "*": 40]
 func getTokenPrecedence() -> Int {
     if binOpPrecedence[currentToken!.val] == nil {
         return -1
     } else {
-        return binOpPrecedence[currentToken!.val]!
+        return Int(binOpPrecedence[currentToken!.val]!)
     }
 }
 
@@ -104,7 +104,7 @@ func parseBinOpRHS(_ exprPrec: Int, _ lhs: inout ExprAST) -> ExprAST? {
         getNextToken()
         
         //解析二元运算符右边的表达式
-        var rhs = parsePrimary()
+        var rhs = parseUnary()
         guard rhs != nil else {
             return nil
         }
@@ -121,7 +121,7 @@ func parseBinOpRHS(_ exprPrec: Int, _ lhs: inout ExprAST) -> ExprAST? {
 }
 
 func parseExpression() -> ExprAST? {
-    var lhs = parsePrimary()
+    var lhs = parseUnary()
     guard lhs != nil else {
         return nil
     }
@@ -130,16 +130,55 @@ func parseExpression() -> ExprAST? {
 
 //解析函数原型
 func parsePrototype() -> PrototypeAST {
-    guard currentToken!.token == .identifier else {
-        fatalError("Expected function name in prototype")
+    var fnName: String
+    let kind: PrototypeKind
+    var binaryPrecedence: UInt = 30
+    
+    switch currentToken!.token {
+    case .identifier:
+        fnName = currentToken!.val
+        kind = .identifier
+        getNextToken()
+        break
+    case .binary:
+        getNextToken()
+        guard Array(currentToken!.val)[0].isASCII else {
+            fatalError("Expected binary operator.")
+        }
+        fnName = "binary"
+        fnName += currentToken!.val
+        kind = .binary
+        getNextToken()
+        
+        if currentToken!.token == .number {
+            let num = UInt(currentToken!.val)!
+            if num < 1 || num > 100 {
+                fatalError("Invalid precedence: must be 1...100.")
+            }
+            binaryPrecedence = num
+            getNextToken()
+        }
+        break
+    case .unary:
+        getNextToken()
+        guard Array(currentToken!.val)[0].isASCII else {
+            fatalError("Expected unary operator.")
+        }
+        fnName = "unary"
+        fnName += currentToken!.val
+        kind = .unary
+        getNextToken()
+        break
+    default:
+        fatalError("Expected function name in prototype.")
     }
-    let fnName = currentToken!.val
-    getNextToken()
+    
     if currentToken!.val != "(" {
         fatalError("Expected '(' in prototype")
     }
-    var argNames: [String] = []
+    
     getNextToken()
+    var argNames: [String] = []
     while currentToken!.token == .identifier {
         argNames.append(currentToken!.val)
         getNextToken()
@@ -148,7 +187,12 @@ func parsePrototype() -> PrototypeAST {
         fatalError("Expected ')' in prototype")
     }
     getNextToken()
-    return PrototypeAST(fnName, argNames)
+    
+    if kind != .identifier && kind.rawValue != argNames.count {
+        fatalError("Invalid number of operands for operator.")
+    }
+    
+    return PrototypeAST(fnName, argNames, kind.rawValue != 0, binaryPrecedence)
 }
 
 //解析函数定义
@@ -248,6 +292,25 @@ func parseForExpr() -> ExprAST? {
     return ForExprAST(idName, start!, end!, step!, body!)
 }
 
+//解析一元表达式
+func parseUnary() -> ExprAST? {
+    //当前token不是操作符，那就是基本类型
+    if currentToken!.val == "(" ||
+        currentToken!.val == "," ||
+        Array(currentToken!.val)[0].isLetter ||
+        Array(currentToken!.val)[0].isNumber {
+        return parsePrimary()
+    }
+    
+    let op = currentToken!.val
+    getNextToken()
+    //这里需要递归的处理一元运算符，比如说 !! x，这里有两个!!需要处理
+    if let operand = parseUnary() {
+        return UnaryExprAST(op, operand)
+    }
+    return nil
+}
+
 //MARK: Top-Level Parse
 
 func handleDefinition() {
@@ -270,7 +333,7 @@ func handleExtern() {
     let f = p.codeGen()
     print("Read extern:")
     f.dump()
-    functionProtos[p.name!] = p
+    functionProtos[p.name] = p
 }
 
 func handleTopLevelExpression() {
