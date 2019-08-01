@@ -45,7 +45,7 @@ class FunctionAST {
             builder.buildRet(retValue)
             do {
                 try theModule.verify()
-                passPipeliner.execute()
+                theFPM.run(on: theFunction!)
                 return theFunction
             } catch {
                 print("verify failure: \(error)")

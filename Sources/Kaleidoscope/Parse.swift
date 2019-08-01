@@ -345,12 +345,12 @@ func handleTopLevelExpression() {
                 let handle = try theJIT.addEagerlyCompiledIR(theModule) { (name) -> JIT.TargetAddress in
                     return JIT.TargetAddress()
                 }
+                initModuleAndPassPipeliner()
                 let addr = try theJIT.address(of: "__anon_expr")
                 typealias FnPr = @convention(c) () -> Int
                 let fn = unsafeBitCast(addr, to: FnPr.self)
                 print("Evaluated to \(fn()).")
                 try theJIT.removeModule(handle)
-                initModuleAndPassPipeliner()
             } catch {
                 fatalError("Adds the IR from a given module failure.")
             }
