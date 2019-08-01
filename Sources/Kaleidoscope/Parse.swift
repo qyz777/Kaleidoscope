@@ -318,9 +318,9 @@ func handleDefinition() {
         if let f = p.codeGen() {
             print("Read function definition:")
             f.dump()
-            _ = try! theJIT.addLazilyCompiledIR(theModule) { (_) -> JIT.TargetAddress in
+            _ = try! theJIT.addEagerlyCompiledIR(theModule, { (_) -> JIT.TargetAddress in
                 return JIT.TargetAddress()
-            }
+            })
             initModuleAndPassPipeliner()
         }
     } else {

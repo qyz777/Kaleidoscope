@@ -53,6 +53,9 @@ class FunctionAST {
         }
         //函数体出现问题，移除函数
         theFunction!.eraseFromParent()
+        if proto.isOperator {
+            binOpPrecedence[proto.operatorName!] = nil
+        }
         return nil
     }
     
