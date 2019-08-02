@@ -10,18 +10,18 @@ import Foundation
 
 class VariableExprAST: ExprAST {
     
-    var name: String?
+    let name: String
     
     init(_ name: String) {
         self.name = name
     }
     
     func codeGen() -> IRValue? {
-        let value = namedValues[name!]
+        let value = namedValues[name]
         guard value != nil else {
             fatalError("unknow variable name.")
         }
-        return value!.asLLVM()
+        return builder.buildLoad(value!, name: name)
     }
     
 }

@@ -20,5 +20,6 @@ enum Token {
     case `in`
     case binary
     case unary
+    case `var`
     case other
 }

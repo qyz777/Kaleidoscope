@@ -23,6 +23,22 @@ class BinaryExprAST: ExprAST {
     }
     
     func codeGen() -> IRValue? {
+        if op == "=" {
+            let lhse = lhs as? VariableExprAST
+            guard lhse != nil else {
+                fatalError("Destination of '=' must be a variable.")
+            }
+            let val = lhse?.codeGen()
+            guard val != nil else {
+                return nil
+            }
+            let variable = namedValues[lhse!.name]
+            guard variable != nil else {
+                fatalError("Unknow variable name.")
+            }
+            builder.buildStore(val!, to: variable!)
+            return val
+        }
         let l = lhs.codeGen()
         let r = rhs.codeGen()
         guard l != nil && r != nil else {

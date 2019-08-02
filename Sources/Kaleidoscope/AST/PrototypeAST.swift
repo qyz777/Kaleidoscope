@@ -56,7 +56,6 @@ class PrototypeAST {
         var p = f.firstParameter
         for i in 0..<args.count {
             p?.name = args[i]
-            namedValues[args[i]] = p
             p = p?.next()
         }
         return f

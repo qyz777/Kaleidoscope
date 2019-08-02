@@ -8,7 +8,7 @@
 
 import Foundation
 
-var binOpPrecedence: [String: UInt] = ["<": 10, "+": 20, "-": 20, "*": 40]
+var binOpPrecedence: [String: UInt] = ["=": 2, "<": 10, "+": 20, "-": 20, "*": 40]
 func getTokenPrecedence() -> Int {
     if binOpPrecedence[currentToken!.val] == nil {
         return -1
@@ -86,6 +86,8 @@ func parsePrimary() -> ExprAST? {
         return parseIfExpr()
     case .for:
         return parseForExpr()
+    case .var:
+        return parseVarExpr()
     default:
         fatalError("unknow token when expecting an expression")
     }
@@ -104,7 +106,7 @@ func parseBinOpRHS(_ exprPrec: Int, _ lhs: inout ExprAST) -> ExprAST? {
         getNextToken()
         
         //解析二元运算符右边的表达式
-        var rhs = parseUnary()
+        var rhs = parseUnaryExpr()
         guard rhs != nil else {
             return nil
         }
@@ -121,7 +123,7 @@ func parseBinOpRHS(_ exprPrec: Int, _ lhs: inout ExprAST) -> ExprAST? {
 }
 
 func parseExpression() -> ExprAST? {
-    var lhs = parseUnary()
+    var lhs = parseUnaryExpr()
     guard lhs != nil else {
         return nil
     }
@@ -289,11 +291,11 @@ func parseForExpr() -> ExprAST? {
         return nil
     }
     
-    return ForExprAST(idName, start!, end!, step!, body!)
+    return ForExprAST(idName, start!, end!, step, body!)
 }
 
 //解析一元表达式
-func parseUnary() -> ExprAST? {
+func parseUnaryExpr() -> ExprAST? {
     //当前token不是操作符，那就是基本类型
     if currentToken!.val == "(" ||
         currentToken!.val == "," ||
@@ -305,10 +307,50 @@ func parseUnary() -> ExprAST? {
     let op = currentToken!.val
     getNextToken()
     //这里需要递归的处理一元运算符，比如说 !! x，这里有两个!!需要处理
-    if let operand = parseUnary() {
+    if let operand = parseUnaryExpr() {
         return UnaryExprAST(op, operand)
     }
     return nil
+}
+
+func parseVarExpr() -> ExprAST? {
+    getNextToken()
+    var varNames: [(String, ExprAST?)] = []
+    guard currentToken!.token == .identifier else {
+        fatalError("Expected identifier after val.")
+    }
+    while true {
+        let name = currentToken!.val
+        getNextToken()
+        
+        let expr: ExprAST? = nil
+        if currentToken!.val == "=" {
+            getNextToken()
+            let expr = parseExpression()
+            guard expr != nil else {
+                return nil
+            }
+        }
+        
+        varNames.append((name, expr))
+        
+        if currentToken!.val != "," {
+            break
+        }
+        getNextToken()
+        if currentToken!.token != .identifier {
+            fatalError("Expected identifier list after var.")
+        }
+    }
+    if currentToken!.token != .in {
+        fatalError("Expected 'in' keyword after 'var'.")
+    }
+    getNextToken()
+    let body = parseExpression()
+    guard body != nil else {
+        return nil
+    }
+    return VarExprAST(varNames, body!)
 }
 
 //MARK: Top-Level Parse

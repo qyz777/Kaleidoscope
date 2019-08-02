@@ -44,6 +44,7 @@ import Foundation
  testfunc(1, 2) : testfunc(3, 4) : testfunc(5, 6);
  
  /Users/qyizhong/Desktop/Kaleidoscope/Examples/test.k
+ /Users/qyizhong/Desktop/Kaleidoscope/Examples/fibi.k
  
  */
 

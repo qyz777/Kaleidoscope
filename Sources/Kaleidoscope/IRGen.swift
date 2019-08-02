@@ -14,13 +14,14 @@ let targetMachine = try! TargetMachine()
 var theFPM: FunctionPassManager!
 let globalContext = Context.global
 let builder = IRBuilder(module: theModule)
-var namedValues: [String: IRValue] = [:]
+var namedValues: [String: IRInstruction] = [:]
 var functionProtos: [String: PrototypeAST] = [:]
 
 func initModuleAndPassPipeliner() {
     theModule = Module(name: "main")
     theModule.dataLayout = targetMachine.dataLayout
     theFPM = FunctionPassManager(module: theModule)
+    theFPM.add(.promoteMemoryToRegister)
     theFPM.add(.instructionCombining)
     theFPM.add(.reassociate)
     theFPM.add(.gvn)
@@ -37,4 +38,9 @@ func getFunction(named name: String) -> Function? {
         }
         return fi?.codeGen()
     }
+}
+
+func createEntryBlockAlloca(function: Function, name: String) -> IRInstruction {
+    let instruction = builder.buildAlloca(type: IntType.int64, count: 0, name: name)
+    return instruction
 }

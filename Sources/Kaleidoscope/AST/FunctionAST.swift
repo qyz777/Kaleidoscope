@@ -35,10 +35,12 @@ class FunctionAST {
         builder.positionAtEnd(of: entry)
         
         namedValues.removeAll()
-        var p = theFunction!.firstParameter
-        while p != nil {
-            namedValues[p!.name] = p!
-            p = p?.next()
+        var arg = theFunction!.firstParameter
+        while arg != nil {
+            let alloca = createEntryBlockAlloca(function: theFunction!, name: arg!.name)
+            builder.buildStore(arg!, to: alloca)
+            namedValues[arg!.name] = alloca
+            arg = arg?.next()
         }
         
         if let retValue = body.codeGen() {
@@ -48,7 +50,7 @@ class FunctionAST {
                 theFPM.run(on: theFunction!)
                 return theFunction
             } catch {
-                print("verify failure: \(error)")
+                print("\(error)")
             }
         }
         //函数体出现问题，移除函数

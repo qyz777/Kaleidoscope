@@ -51,6 +51,8 @@ func getToken() -> CurrentToken {
             return CurrentToken(token: .binary, val: "binary")
         } else if identifierStr == "unary" {
             return CurrentToken(token: .unary, val: "unary")
+        } else if identifierStr == "var" {
+            return CurrentToken(token: .var, val: "var")
         } else {
             return CurrentToken(token: .identifier, val: identifierStr)
         }

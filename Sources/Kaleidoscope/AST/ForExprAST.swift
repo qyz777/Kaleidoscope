@@ -9,17 +9,17 @@ import Foundation
 
 class ForExprAST: ExprAST {
     
-    var name: String!
+    let name: String
     
-    var start: ExprAST!
+    let start: ExprAST
     
-    var end: ExprAST!
+    let end: ExprAST
     
-    var step: ExprAST!
+    let step: ExprAST?
     
-    var body: ExprAST!
+    let body: ExprAST
     
-    init(_ name: String, _ start: ExprAST, _ end: ExprAST, _ step: ExprAST, _ body: ExprAST) {
+    init(_ name: String, _ start: ExprAST, _ end: ExprAST, _ step: ExprAST?, _ body: ExprAST) {
         self.name = name
         self.start = start
         self.end = end
@@ -38,28 +38,30 @@ class ForExprAST: ExprAST {
         guard theFunction != nil else {
             return nil
         }
-        let preHeaderBB = builder.insertBlock
+        
+        let alloca = createEntryBlockAlloca(function: theFunction!, name: name)
+        builder.buildStore(startVal!, to: alloca)
+        
         let loopBB = theFunction!.appendBasicBlock(named: "loop")
         builder.buildBr(loopBB)
         builder.positionAtEnd(of: loopBB)
         
-        //这里控制循环或退出
-        let phi = builder.buildPhi(IntType.int64, name: name)
-        phi.addIncoming([(startVal!, preHeaderBB!)])
-        
         let oldVal = namedValues[name]
-        namedValues[name] = phi
+        namedValues[name] = alloca
         
         guard body.codeGen() != nil else {
             return nil
         }
         
-        let stepVal = step.codeGen()
-        guard stepVal != nil else {
-            return nil
+        let stepVal: IRValue?
+        if step != nil {
+            stepVal = step!.codeGen()
+            guard stepVal != nil else {
+                return nil
+            }
+        } else {
+            stepVal = IntType.int64.zero()
         }
-        
-        let nextVar = builder.buildAdd(phi, stepVal!, name: "nextVar")
         
         //循环终止条件
         var endCond = end.codeGen()
@@ -68,13 +70,14 @@ class ForExprAST: ExprAST {
         }
         endCond = builder.buildICmp(endCond!, IntType.int64.zero(), .equal, name: "loopCond")
         
+        let curVal = builder.buildLoad(alloca)
+        let nextVal = builder.buildAdd(curVal, startVal!, name: "nextVal")
+        builder.buildStore(nextVal, to: alloca)
+        
         //循环后的代码basic block
-        let loopEndBB = builder.insertBlock
         let afterBB = theFunction?.appendBasicBlock(named: "afterLoop")
         builder.buildCondBr(condition: endCond!, then: loopBB, else: afterBB!)
         builder.positionAtEnd(of: afterBB!)
-        
-        phi.addIncoming([(nextVar, loopEndBB!)])
         
         if oldVal != nil {
             namedValues[name] = oldVal!
