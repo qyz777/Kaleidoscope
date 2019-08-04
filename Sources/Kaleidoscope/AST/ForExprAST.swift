@@ -68,7 +68,8 @@ class ForExprAST: ExprAST {
         guard endCond != nil else {
             return nil
         }
-        endCond = builder.buildICmp(endCond!, FloatType.double.constant(0), .equal, name: "loopCond")
+        //build条件时候要使用int类型
+        endCond = builder.buildICmp(endCond!, IntType.int1.zero(), .signedLessThan, name: "loopCond")
         
         let curVal = builder.buildLoad(alloca)
         let nextVal = builder.buildAdd(curVal, startVal!, name: "nextVal")

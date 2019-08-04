@@ -26,7 +26,8 @@ class IfExprAST: ExprAST {
         guard condV != nil else {
             return nil
         }
-        condV = builder.buildICmp(condV!, FloatType.double.constant(0), .equal, name: "ifCond")
+        //这里有个神坑就是build条件时候要使用int类型
+        condV = builder.buildICmp(condV!, IntType.int1.zero(), .equal, name: "ifCond")
         
         let theFunction = builder.insertBlock?.parent
         guard theFunction != nil else {

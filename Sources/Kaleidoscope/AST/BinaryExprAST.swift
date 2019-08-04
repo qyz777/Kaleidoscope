@@ -52,8 +52,7 @@ class BinaryExprAST: ExprAST {
         case "*":
             return builder.buildMul(l!, r!, name: "mul")
         case "<":
-            let newL = builder.buildICmp(l!, r!, .signedLessThan, name: "boolCmp")
-            return builder.buildFPCast(l!, type: FloatType.double, name: "boolCmp")
+            return builder.buildFCmp(l!, r!, .unorderedLessThan, name: "boolCmp")
         default:
             break
         }

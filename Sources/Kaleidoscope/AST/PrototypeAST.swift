@@ -47,8 +47,8 @@ class PrototypeAST {
     }
     
     func codeGen() -> Function {
-        let ints = Array(repeating: FloatType.double, count: args.count)
-        let ft = FunctionType(ints, FloatType.double, variadic: false)
+        let doubles = Array(repeating: FloatType.double, count: args.count)
+        let ft = FunctionType(doubles, FloatType.double, variadic: false)
         var f: Function = theModule.addFunction(name, type: ft)
         //这其实是默认linkage，这里为了和官方教程保持一致，显示的写一下
         f.linkage = .external
