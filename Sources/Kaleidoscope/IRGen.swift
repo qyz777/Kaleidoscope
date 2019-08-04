@@ -41,6 +41,6 @@ func getFunction(named name: String) -> Function? {
 }
 
 func createEntryBlockAlloca(function: Function, name: String) -> IRInstruction {
-    let instruction = builder.buildAlloca(type: IntType.int64, count: 0, name: name)
+    let instruction = builder.buildAlloca(type: FloatType.double, count: 0, name: name)
     return instruction
 }

@@ -1,1 +1,1 @@
-def average(x y) (x + y) * 2;
+def average(x y) (x + y) * 0.5;

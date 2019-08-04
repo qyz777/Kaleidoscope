@@ -34,7 +34,7 @@ class VarExprAST: ExprAST {
                 }
             } else {
                 //没有的话就默认0
-                initVal = IntType.int64.zero()
+                initVal = FloatType.double.constant(0)
             }
             
             let alloca = createEntryBlockAlloca(function: theFunction!, name: v.0)

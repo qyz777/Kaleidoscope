@@ -26,7 +26,7 @@ class IfExprAST: ExprAST {
         guard condV != nil else {
             return nil
         }
-        condV = builder.buildICmp(condV!, IntType.int64.zero(), .equal, name: "ifCond")
+        condV = builder.buildICmp(condV!, FloatType.double.constant(0), .equal, name: "ifCond")
         
         let theFunction = builder.insertBlock?.parent
         guard theFunction != nil else {
@@ -55,7 +55,7 @@ class IfExprAST: ExprAST {
         builder.buildBr(mergeBB)
         
         builder.positionAtEnd(of: mergeBB)
-        let phi = builder.buildPhi(IntType.int64, name: "phi")
+        let phi = builder.buildPhi(FloatType.double, name: "phi")
         phi.addIncoming([(thenVal!, thenBB), (elseVal!, elseBB)])
         
         return phi

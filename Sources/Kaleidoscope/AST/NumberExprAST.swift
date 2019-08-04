@@ -10,14 +10,14 @@ import Foundation
 
 class NumberExprAST: ExprAST {
     
-    var value: Int?
+    let value: Double
     
-    init(_ value: Int) {
+    init(_ value: Double) {
         self.value = value
     }
     
     func codeGen() -> IRValue? {
-        return value!.asLLVM()
+        return FloatType.double.constant(value)
     }
     
 }

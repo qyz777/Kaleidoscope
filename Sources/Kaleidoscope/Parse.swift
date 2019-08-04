@@ -50,7 +50,7 @@ func parseIdentifierExpr() -> ExprAST? {
 
 //解析数值常量
 func parseNumberExpr() -> ExprAST {
-    let result = NumberExprAST(Int(currentToken!.val)!)
+    let result = NumberExprAST(Double(currentToken!.val)!)
     getNextToken()
     return result
 }
