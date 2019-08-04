@@ -28,7 +28,7 @@ class FunctionAST {
         
         //如果是操作符，把他放在全局的操作符表中
         if proto.isOperator {
-            binOpPrecedence[proto.operatorName!] = proto.precedence
+            BinOpPrecedence[proto.operatorName!] = proto.precedence
         }
         
         let entry = theFunction!.appendBasicBlock(named: "entry")
@@ -56,7 +56,7 @@ class FunctionAST {
         //函数体出现问题，移除函数
         theFunction!.eraseFromParent()
         if proto.isOperator {
-            binOpPrecedence[proto.operatorName!] = nil
+            BinOpPrecedence[proto.operatorName!] = nil
         }
         return nil
     }

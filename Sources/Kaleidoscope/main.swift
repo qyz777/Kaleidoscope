@@ -70,10 +70,12 @@ func main() {
     theJIT = JIT(machine: targetMachine)
     //初始化Module和中间代码优化器
     initModuleAndPassPipeliner()
+    //解析器
+    let parser = Parser()
     
     if let path = String(data: FileHandle.standardInput.availableData, encoding: .utf8) {
         if let str = readFile(path) {
-            mainLoop(str)
+            parser.parse(str)
             let triple = Triple.default
             theModule.targetTriple = triple
             do {
