@@ -10,10 +10,6 @@ This tutorial introduces the simple “Kaleidoscope” language, building it ite
 
 ## TODO
 
-[Chapter #7](http://llvm.org/docs/tutorial/MyFirstLanguageFrontend/LangImpl07.html)
-
-[Chapter #8](http://llvm.org/docs/tutorial/MyFirstLanguageFrontend/LangImpl08.html)
-
 [Chapter #9](http://llvm.org/docs/tutorial/MyFirstLanguageFrontend/LangImpl09.html)
 
 [Chapter #10](http://llvm.org/docs/tutorial/MyFirstLanguageFrontend/LangImpl10.html)
@@ -24,9 +20,11 @@ This tutorial introduces the simple “Kaleidoscope” language, building it ite
 
 ### 下载llvm和pkg-config
 
-```shell
+``` shell
 brew install llvm
 brew install pkg-config
+# 在.bash_profile下配置llvm命令行，具体情况根据你所安装的llvm版本不同
+export PATH=/usr/local/Cellar/llvm/8.0.0_1/bin:$PATH;
 ```
 
 ### 工程配置

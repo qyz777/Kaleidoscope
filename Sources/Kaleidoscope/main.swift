@@ -43,7 +43,7 @@ import Foundation
  def binary : 1 (x y) 0;
  testfunc(1, 2) : testfunc(3, 4) : testfunc(5, 6);
  
- /Users/qyizhong/Desktop/Kaleidoscope/Examples/test.k
+ /Users/qyizhong/Desktop/Kaleidoscope/Examples/average.k
  /Users/qyizhong/Desktop/Kaleidoscope/Examples/fibi.k
  
  */
@@ -72,9 +72,27 @@ func main() {
     initModuleAndPassPipeliner()
     
     if let path = String(data: FileHandle.standardInput.availableData, encoding: .utf8) {
-        
         if let str = readFile(path) {
             mainLoop(str)
+            let triple = Triple.default
+            theModule.targetTriple = triple
+            do {
+                //这个初始化方法里已经调用了initializeLLVM()
+                let targetMachine = try TargetMachine(triple: triple,
+                                                      cpu: "x86-64",
+                                                      features: "",
+                                                      optLevel: .default,
+                                                      relocations: .default,
+                                                      codeModel: .default)
+                theModule.dataLayout = targetMachine.dataLayout
+                let pass = PassPipeliner(module: theModule)
+                pass.execute()
+                let path = "/Users/qyizhong/Desktop/Kaleidoscope/Output/output.o"
+                try targetMachine.emitToFile(module: theModule, type: .object, path: path)
+                print("Wrote \(path)")
+            } catch {
+                print("\(error)")
+            }
         }
     }
 }
