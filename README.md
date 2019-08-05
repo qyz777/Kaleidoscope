@@ -35,3 +35,6 @@ swift run
 ./Examples/test.k
 ```
 
+## 开发教程
+
+[教你使用swift写编译器玩具（0）](./doc/第0章.md)
