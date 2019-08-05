@@ -47,7 +47,6 @@ class FunctionAST {
             builder.buildRet(retValue)
             do {
                 try theModule.verify()
-//                theFPM.run(on: theFunction!)
                 return theFunction
             } catch {
                 print("\(error)")

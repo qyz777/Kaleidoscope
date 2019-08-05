@@ -45,8 +45,11 @@ import Foundation
  
  /Users/qyizhong/Desktop/Kaleidoscope/Examples/average.k
  /Users/qyizhong/Desktop/Kaleidoscope/Examples/fibi.k
+ /Users/qyizhong/Desktop/Kaleidoscope/Examples/test.k
  
  */
+
+let isUseJIT = false
 
 func readFile(_ path: String) -> String? {
     var path = path
@@ -66,21 +69,18 @@ func readFile(_ path: String) -> String? {
 }
 
 func main() {
-    //初始化JIT
-    theJIT = JIT(machine: targetMachine)
     //初始化Module和中间代码优化器
-    initModuleAndPassPipeliner()
+    initModule()
     //解析器
     let parser = Parser()
     
     if let path = String(data: FileHandle.standardInput.availableData, encoding: .utf8) {
         if let str = readFile(path) {
             parser.parse(str)
-            let triple = Triple.default
-            theModule.targetTriple = triple
+            theModule.targetTriple = .default
             do {
                 //这个初始化方法里已经调用了initializeLLVM()
-                let targetMachine = try TargetMachine(triple: triple,
+                let targetMachine = try TargetMachine(triple: .default,
                                                       cpu: "x86-64",
                                                       features: "",
                                                       optLevel: .default,
@@ -89,9 +89,15 @@ func main() {
                 theModule.dataLayout = targetMachine.dataLayout
                 let pass = PassPipeliner(module: theModule)
                 pass.execute()
-                let path = "/Users/qyizhong/Desktop/Kaleidoscope/Output/output.o"
-                try targetMachine.emitToFile(module: theModule, type: .object, path: path)
-                print("Wrote \(path)")
+                if isUseJIT {
+                    let runner = CodeRunner(machine: targetMachine)
+                    runner.run(module: theModule)
+                } else {
+                    //修改为自己的路径
+                    let path = "/Users/qyizhong/Desktop/Kaleidoscope/Output/output.o"
+                    try targetMachine.emitToFile(module: theModule, type: .object, path: path)
+                    print("Wrote \(path)")
+                }
             } catch {
                 print("\(error)")
             }

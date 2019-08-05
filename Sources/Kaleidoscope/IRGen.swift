@@ -9,23 +9,12 @@ import Foundation
 import LLVM
 
 var theModule: Module! = Module(name: "main")
-var theJIT: JIT!
-let targetMachine = try! TargetMachine()
-//var theFPM: FunctionPassManager!
-let globalContext = Context.global
 let builder = IRBuilder(module: theModule)
 var namedValues: [String: IRInstruction] = [:]
 var functionProtos: [String: PrototypeAST] = [:]
 
-func initModuleAndPassPipeliner() {
+func initModule() {
     theModule = Module(name: "main")
-//    theModule.dataLayout = targetMachine.dataLayout
-//    theFPM = FunctionPassManager(module: theModule)
-//    theFPM.add(.promoteMemoryToRegister)
-//    theFPM.add(.instructionCombining)
-//    theFPM.add(.reassociate)
-//    theFPM.add(.gvn)
-//    theFPM.add(.cfgSimplification)
 }
 
 func getFunction(named name: String) -> Function? {
