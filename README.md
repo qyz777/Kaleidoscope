@@ -41,3 +41,5 @@ swift run
 
 [教你使用swift写编译器玩具（1)](./doc/第1章.md)
 
+[教你使用swift写编译器玩具（2)](./doc/第2章.md)
+
