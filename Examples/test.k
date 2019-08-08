@@ -1,4 +1,1 @@
-def testfunc(x y) 
-    x + y*2;
-
-testfunc(4, 10);
+def test(x) (1+2+x)*(x+(1+2));
