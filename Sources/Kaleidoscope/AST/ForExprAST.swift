@@ -60,7 +60,7 @@ class ForExprAST: ExprAST {
                 return nil
             }
         } else {
-            stepVal = FloatType.double.constant(0)
+            stepVal = FloatType.double.constant(1)
         }
         
         //循环终止条件
@@ -69,7 +69,7 @@ class ForExprAST: ExprAST {
             return nil
         }
         //build条件时候要使用int类型
-        endCond = builder.buildICmp(endCond!, IntType.int1.zero(), .signedLessThan, name: "loopCond")
+        endCond = builder.buildICmp(endCond!, IntType.int1.zero(), .equal, name: "loopCond")
         
         let curVal = builder.buildLoad(alloca)
         let nextVal = builder.buildAdd(curVal, startVal!, name: "nextVal")
