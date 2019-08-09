@@ -52,7 +52,7 @@ class BinaryExprAST: ExprAST {
         case "*":
             return builder.buildMul(l!, r!, name: "mul")
         case "<":
-            return builder.buildFCmp(l!, r!, .unorderedLessThan, name: "boolCmp")
+            return builder.buildFCmp(l!, r!, .orderedLessThan, name: "boolCmp")
         default:
             break
         }
