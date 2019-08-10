@@ -72,7 +72,7 @@ class ForExprAST: ExprAST {
         endCond = builder.buildICmp(endCond!, IntType.int1.zero(), .notEqual, name: "loopCond")
         
         let curVal = builder.buildLoad(alloca)
-        let nextVal = builder.buildAdd(curVal, startVal!, name: "nextVal")
+        let nextVal = builder.buildAdd(curVal, stepVal!, name: "nextVal")
         builder.buildStore(nextVal, to: alloca)
         
         //循环后的代码basic block
