@@ -1,12 +1,10 @@
 # Kaleidoscope
 
-参考[My First Language Frontend with LLVM Tutorial](http://llvm.org/docs/tutorial/MyFirstLanguageFrontend/index.html)的C++代码实现的swift版Kaleidoscope，目前正在coding中。
+参考[My First Language Frontend with LLVM Tutorial](http://llvm.org/docs/tutorial/MyFirstLanguageFrontend/index.html)的C++代码实现的swift版Kaleidoscope。
 
-Kaleidoscope是LLVM教程中实现的demo语言，以下是它的介绍
+Kaleidoscope是LLVM教程中实现的demo语言，以下是它的介绍:
 
-```
-This tutorial introduces the simple “Kaleidoscope” language, building it iteratively over the course of several chapters, showing how it is built over time. This lets us cover a range of language design and LLVM-specific ideas, showing and explaining the code for it all along the way, and reduces the overwhelming amount of details up front. We strongly encourage that you work with this code - make a copy and hack it up and experiment.
-```
+*This tutorial introduces the simple “Kaleidoscope” language, building it iteratively over the course of several chapters, showing how it is built over time. This lets us cover a range of language design and LLVM-specific ideas, showing and explaining the code for it all along the way, and reduces the overwhelming amount of details up front. We strongly encourage that you work with this code - make a copy and hack it up and experiment.*
 
 ## 运行工程的必要配置
 
